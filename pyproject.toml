@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "dummy-tg"
+version = "0.1.0"
+description = ""
+authors = ["Olga Lipina <olga.lipina@tedo.ru>"]
+readme = "README.md"
+packages = [{include = "dummy_tg"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-telegram-bot = "^21.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

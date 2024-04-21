@@ -1,0 +1,3 @@
+telegram_token: your_token
+n_seconds_sleep: 65
+qa_df_path: "data/qa_df.csv"
