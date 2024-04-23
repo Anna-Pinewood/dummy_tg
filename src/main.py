@@ -4,20 +4,12 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandle
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 import logging
 import time
-
+import pandas as pd
 import yaml
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-QA_DICT = {
-    "Как дела?": "Хорошо, спасибо!",
-    "Какой сегодня день?": "Сегодня вторник.",
-    "Что делаешь?": "Отвечаю на твои сообщения!",
-    "Привет": "Привет! Чем могу помочь?"
-}
 
 
 async def start(update: Update, context: CallbackContext) -> None:
@@ -32,11 +24,18 @@ async def echo(update: Update, context: CallbackContext) -> None:
                  InlineKeyboardButton("👎", callback_data='dislike')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
+    df = pd.read_excel(QA_DF_PATH)
+    qa_dict_live = dict(zip(df['question'].str.strip().to_list(),
+                            df[ANSWER_COLUMN].to_list()))
 
-    if user_input in QA_DICT:
+    # print(qa_dict_live)
+    if user_input in qa_dict_live:
         # await update.message.reply_text("Подождите немного...")
         time.sleep(N_SECONDS_SLEEP)
-        await update.message.reply_text(QA_DICT[user_input], reply_markup=reply_markup)
+
+        answer = str(qa_dict_live[user_input])
+        answer += "\n\n\nОцените, пожалуйста, ответ:"
+        await update.message.reply_text(answer, reply_markup=reply_markup)
     else:
         await update.message.reply_text("Извините, я не знаю ответ на этот вопрос.")
 
@@ -66,4 +65,6 @@ if __name__ == '__main__':
     TELEGRAM_TOKEN = config['telegram_token']
     N_SECONDS_SLEEP = int(config['n_seconds_sleep'])
     QA_DF_PATH = config['qa_df_path']
+    df = pd.read_excel(QA_DF_PATH)
+    ANSWER_COLUMN = 'model_answer'
     main()

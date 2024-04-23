@@ -9,6 +9,7 @@ packages = [{include = "dummy_tg"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 python-telegram-bot = "^21.1.1"
+pandas = "^2.2.2"
 
 
 [build-system]
